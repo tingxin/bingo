@@ -6,9 +6,9 @@ import (
 	"github.com/iris-contrib/middleware/cors"
 	"github.com/kataras/iris"
 	"github.com/kataras/iris/core/router"
+	"github.com/tingxin/bingo/common/meta"
+	"github.com/tingxin/bingo/model"
 	s "github.com/tingxin/bingo/service"
-	"github.com/tingxin/cedarbi-data/endpoint/health"
-	"github.com/tingxin/cedarbi-data/model"
 )
 
 type service struct {
@@ -26,6 +26,8 @@ func New() s.Server {
 }
 
 func (p *service) Run() error {
+	meta.Run()
+
 	api := iris.Default()
 	api.OnErrorCode(iris.StatusNotFound, func(ctx iris.Context) {
 		ctx.JSON(model.NewResponse(iris.StatusNotFound, "404 没有找到你想要的资源！", nil))
@@ -49,7 +51,6 @@ func (p *service) Run() error {
 	{
 		p.register(v)
 	}
-	health.Register(api)
 
 	address := fmt.Sprintf("0.0.0.0:%d", p.port)
 	api.Run(iris.Addr(address))
