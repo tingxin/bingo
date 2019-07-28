@@ -1,0 +1,8 @@
+CREATE TABLE IF NOT EXISTS tag (
+	id INT NOT NULL AUTO_INCREMENT,
+	name VARCHAR(64) NOT NULL,
+	level SMALLINT(4) NOT NULL DEFAULT 0,
+    `order` INT NOT NULL DEFAULT 0,
+	PRIMARY KEY(id),
+	UNIQUE KEY `name_level` (`name`, `level`) 
+)

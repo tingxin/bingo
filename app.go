@@ -7,6 +7,7 @@ import (
 	"github.com/urfave/cli"
 
 	"github.com/tingxin/bingo/service/data"
+	"github.com/tingxin/bingo/service/resource"
 )
 
 var (
@@ -50,6 +51,17 @@ func initCmd() {
 				return nil
 			},
 		},
+		{
+			Name:  "resource",
+			Usage: "start bingo resource service",
+			Action: func(c *cli.Context) error {
+				log.INFO.Printf("start bingo resource service")
+				if err := runResourceService(); err != nil {
+					return cli.NewExitError(err.Error(), 1)
+				}
+				return nil
+			},
+		},
 	}
 
 	// Run the CLI app
@@ -58,5 +70,10 @@ func initCmd() {
 
 func runDataService() error {
 	server := data.New()
+	return server.Run()
+}
+
+func runResourceService() error {
+	server := resource.New()
 	return server.Run()
 }
