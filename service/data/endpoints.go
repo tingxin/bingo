@@ -66,14 +66,14 @@ func (p *service) query(ctx iris.Context) {
 			}
 			result[i] = rowt
 		}
-		ctx.StatusCode(200)
+		ctx.StatusCode(iris.StatusOK)
 		ctx.JSON(result)
 		break
 	}
 	if errs != nil {
-		ctx.StatusCode(200)
+		ctx.StatusCode(code)
 		errStr := fmt.Sprintf("query error : %v", errs)
-		ctx.JSON(m.NewResponse(code, errStr, nil))
+		ctx.JSON(m.NewResponse(errStr, nil))
 	}
 }
 

@@ -6,6 +6,7 @@ import (
 	"github.com/tingxin/go-utility/log"
 	"github.com/urfave/cli"
 
+	"github.com/tingxin/bingo/service/auth"
 	"github.com/tingxin/bingo/service/data"
 	"github.com/tingxin/bingo/service/resource"
 )
@@ -62,6 +63,17 @@ func initCmd() {
 				return nil
 			},
 		},
+		{
+			Name:  "auth",
+			Usage: "start bingo auth service",
+			Action: func(c *cli.Context) error {
+				log.INFO.Printf("start bingo auth service")
+				if err := runAuthService(); err != nil {
+					return cli.NewExitError(err.Error(), 1)
+				}
+				return nil
+			},
+		},
 	}
 
 	// Run the CLI app
@@ -70,6 +82,11 @@ func initCmd() {
 
 func runDataService() error {
 	server := data.New()
+	return server.Run()
+}
+
+func runAuthService() error {
+	server := auth.New()
 	return server.Run()
 }
 

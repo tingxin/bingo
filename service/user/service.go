@@ -1,4 +1,4 @@
-package data
+package user
 
 import (
 	"fmt"
@@ -6,7 +6,6 @@ import (
 	"github.com/iris-contrib/middleware/cors"
 	"github.com/kataras/iris"
 	"github.com/kataras/iris/core/router"
-	"github.com/tingxin/bingo/common/meta"
 	"github.com/tingxin/bingo/middleware/auth"
 	"github.com/tingxin/bingo/model"
 	s "github.com/tingxin/bingo/service"
@@ -21,13 +20,12 @@ type service struct {
 // New used to create a new data service
 func New() s.Server {
 	instance := service{}
-	instance.domain = "data"
-	instance.port = 5025
+	instance.domain = "user"
+	instance.port = 5028
 	return &instance
 }
 
 func (p *service) Run() error {
-	meta.Run()
 
 	api := iris.Default()
 	api.OnErrorCode(iris.StatusNotFound, func(ctx iris.Context) {
@@ -66,15 +64,6 @@ func (p *service) Stop() error {
 }
 
 func (p *service) register(r router.Party) error {
-	r.Post("/query", p.query)
-	r.Post("/query/{offset:int}", p.query)
-	r.Post("/query/{offset:int}/{count:int}", p.query)
-
 	r.Get("/health", p.health)
 	return nil
-}
-
-// health used to check service health
-func (p *service) health(ctx iris.Context) {
-	ctx.StatusCode(200)
 }

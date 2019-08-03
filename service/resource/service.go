@@ -6,6 +6,7 @@ import (
 	"github.com/iris-contrib/middleware/cors"
 	"github.com/kataras/iris"
 	"github.com/kataras/iris/core/router"
+	"github.com/tingxin/bingo/middleware/auth"
 	"github.com/tingxin/bingo/model"
 	s "github.com/tingxin/bingo/service"
 )
@@ -28,7 +29,7 @@ func (p *service) Run() error {
 	p.prepare()
 	api := iris.Default()
 	api.OnErrorCode(iris.StatusNotFound, func(ctx iris.Context) {
-		ctx.JSON(model.NewResponse(iris.StatusNotFound, "404 没有找到你想要的资源！", nil))
+		ctx.JSON(model.NewResponse("404 没有找到你想要的资源！", nil))
 	})
 	api.OnErrorCode(iris.StatusInternalServerError, func(ctx iris.Context) {
 		ctx.WriteString("网络异常，请重试！")
@@ -49,7 +50,7 @@ func (p *service) Run() error {
 	{
 		p.register(v)
 	}
-
+	api.Use(auth.Run)
 	address := fmt.Sprintf("0.0.0.0:%d", p.port)
 	api.Run(iris.Addr(address))
 	return nil
