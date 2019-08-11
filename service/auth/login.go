@@ -4,7 +4,6 @@ import (
 	"os"
 
 	"github.com/kataras/iris"
-	"github.com/tingxin/bingo/service/auth/cas"
 	"github.com/tingxin/bingo/service/auth/normal"
 )
 
@@ -21,14 +20,8 @@ func init() {
 }
 
 func (p *service) sign(ctx iris.Context) {
-	authKind := os.Getenv("AuthKind")
-
+	// authKind := os.Getenv("AuthKind")
 	var method func(iris.Context, []byte)
-	if authKind == "cas" {
-		method = cas.Sign
-	} else {
-		method = normal.Sign
-	}
-
+	method = normal.Sign
 	method(ctx, secret)
 }
