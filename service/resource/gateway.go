@@ -2,16 +2,21 @@ package resource
 
 import (
 	"fmt"
+	"io/ioutil"
+	"os"
+	"time"
 
 	"github.com/iris-contrib/middleware/cors"
 	"github.com/kataras/iris"
-	"github.com/kataras/iris/core/router"
 	"github.com/tingxin/bingo/middleware/auth"
 	"github.com/tingxin/bingo/model"
 	s "github.com/tingxin/bingo/service"
+	"github.com/tingxin/bingo/setting"
+	"github.com/tingxin/go-utility/db/mysql"
+	"github.com/tingxin/go-utility/log"
 )
 
-type service struct {
+type gateway struct {
 	s.Server
 	domain string
 	port   int16
@@ -19,13 +24,13 @@ type service struct {
 
 // New used to create a new data service
 func New() s.Server {
-	instance := service{}
+	instance := gateway{}
 	instance.domain = "resource"
 	instance.port = 5027
 	return &instance
 }
 
-func (p *service) Run() error {
+func (p *gateway) Run() error {
 	p.prepare()
 	api := iris.Default()
 	api.OnErrorCode(iris.StatusNotFound, func(ctx iris.Context) {
@@ -56,16 +61,35 @@ func (p *service) Run() error {
 	return nil
 }
 
-func (p *service) Stop() error {
+func (p *gateway) Stop() error {
 	return nil
-
 }
 
-func (p *service) register(r router.Party) error {
-	r.Post("/", p.create)
-	r.Post("/query/{offset:int}", p.list)
-	r.Post("/query/{offset:int}/{count:int}", p.list)
+// health used to check service health
+func (p *gateway) prepare() {
+	conn, err := mysql.GetConn(setting.MetaDBConnStr)
+	if err != nil {
+		panic(err)
+	}
+	rootFolder, _ := os.Getwd()
+	prerequisites := fmt.Sprintf("%s/service/resource/assets/prerequisite", rootFolder)
+	files, err := ioutil.ReadDir(prerequisites)
+	if err != nil {
+		panic(err)
+	}
 
-	r.Get("/health", p.health)
-	return nil
+	for _, file := range files {
+		fileName := file.Name()
+		filePath := fmt.Sprintf("%s/%s", prerequisites, fileName)
+		data, err := ioutil.ReadFile(filePath)
+		if err != nil {
+			panic(err)
+		}
+
+		sql := string(data)
+		log.INFO.Printf("Run\n %s \n", sql)
+		mysql.ExecuteWithConn(conn, sql)
+		log.INFO.Printf("Done %s \n", fileName)
+		time.Sleep(time.Second)
+	}
 }

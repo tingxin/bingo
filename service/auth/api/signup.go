@@ -5,7 +5,7 @@ import (
 
 	"github.com/kataras/iris"
 	m "github.com/tingxin/bingo/model"
-	cmd "github.com/tingxin/bingo/service/auth/command"
+	"github.com/tingxin/bingo/service/auth/cmd"
 	"github.com/tingxin/bingo/service/auth/domain/jwt"
 )
 

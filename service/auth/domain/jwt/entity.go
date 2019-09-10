@@ -8,7 +8,7 @@ import (
 	"github.com/iris-contrib/middleware/jwt"
 	"github.com/kataras/iris"
 
-	cmd "github.com/tingxin/bingo/service/auth/command"
+	"github.com/tingxin/bingo/service/auth/cmd"
 	"github.com/tingxin/bingo/service/auth/dao"
 )
 
