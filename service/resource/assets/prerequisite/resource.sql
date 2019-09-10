@@ -2,6 +2,7 @@ CREATE TABLE `resource` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `name` varchar(64) NOT NULL,
   `desc` varchar(128) DEFAULT NULL,
+  `keywords` varchar(512) DEFAULT NULL,
   `creator` varchar(64) NOT NULL,
   `editor` varchar(64) NOT NULL,
   `create_time` datetime DEFAULT NULL,

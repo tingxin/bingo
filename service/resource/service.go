@@ -62,7 +62,7 @@ func (p *service) Stop() error {
 }
 
 func (p *service) register(r router.Party) error {
-	r.Post("/query", p.list)
+	r.Post("/", p.create)
 	r.Post("/query/{offset:int}", p.list)
 	r.Post("/query/{offset:int}/{count:int}", p.list)
 
